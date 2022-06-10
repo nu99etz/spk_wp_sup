@@ -2,6 +2,15 @@
 
 if (Route::is_ajax()) {
 
+    function getAlternatif($data, $idKriteria)
+    {
+        if (isset($data[$idKriteria])) {
+            return $data[$idKriteria];
+        } else {
+            return " - ";
+        }
+    }
+
     function converter($conn, $id, $alternatif)
     {
         $sql = "select*from nilai_bobot_kriteria where id_kriteria = $id";
@@ -45,6 +54,10 @@ if (Route::is_ajax()) {
             }
         }
 
+        if(empty($nilai_bobot)) {
+            return 0;
+        }
+
         return $nilai_bobot;
     }
 
@@ -58,8 +71,15 @@ if (Route::is_ajax()) {
 
     while ($alternatif = mysqli_fetch_array($query)) {
         $row = [];
-        $row[$alternatif['id_kriteria']] = $alternatif['nilai_kriteria'];
-        $map[$alternatif['id_produk']][$alternatif['nama_produk']][] = $row;
+        $map[$alternatif['id_produk']][$alternatif['nama_produk']][$alternatif['id_kriteria']] =  $alternatif['nilai_kriteria'];
+    }
+
+    $sqlKriteria = "select id from kriteria where id in (select id_kriteria from nilai_bobot_kriteria)";
+    $queryKriteria = mysqli_query($conn->connect(), $sqlKriteria);
+
+    $kriteriaRow = [];
+    while ($kriteria = mysqli_fetch_array($queryKriteria)) {
+        $kriteriaRow[] = $kriteria['id'];
     }
 
     foreach ($map as $key => $value) {
@@ -68,10 +88,14 @@ if (Route::is_ajax()) {
         foreach ($value as $key2 => $value2) {
             $row[] = $key2;
         }
-        foreach ($value2 as $key3 => $value3) {
-            foreach ($value3 as $key4 => $value4) {
-                $row[] = converter($conn, $key4, $value4);
-            }
+        // foreach ($value2 as $key3 => $value3) {
+        //     foreach ($value3 as $key4 => $value4) {
+        //         $row[] = converter($conn, $key4, $value4);
+        //     }
+        // }
+        foreach ($kriteriaRow as $value) {
+            $nilaiAlternatif = getAlternatif($value2, $value);
+            $row[] = converter($conn, $value, $nilaiAlternatif);
         }
         $no++;
         $record[] = $row;

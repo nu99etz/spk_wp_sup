@@ -4,7 +4,7 @@ defined('__VALID_ENTRANCE') or die('Dilarang Akses Halaman Ini :v');
 
 Page::useLayout("app");
 
-$sql = "select*from kriteria where 1 = 1";
+$sql = "select*from kriteria where id in (select id_kriteria from nilai_bobot_kriteria)";
 $query_kriteria = mysqli_query($conn->connect(), $sql);
 
 ?>

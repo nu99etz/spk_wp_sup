@@ -27,7 +27,7 @@ if (Route::is_ajax()) {
         ?>
             <div class="form-group">
                 <label for="<?php echo $record[$i]['nama_kriteria']; ?>"><?php echo $record[$i]['nama_kriteria']; ?></label>
-                <input type="number" class="form-control rounded-0" name="nilai[<?php echo $record[$i]['id']; ?>]; ?>" placeholder="<?php echo $record[$i]['nama_kriteria']; ?>">
+                <input type="number" min="1" max="100" class="form-control rounded-0" name="nilai[<?php echo $record[$i]['id']; ?>]; ?>" placeholder="Input 1 - 100">
             </div>
         <?php
         } ?>

@@ -13,6 +13,11 @@ if (Route::is_ajax()) {
         $row = [];
         $row[] = $no;
         $row[] = $produk['nama_produk'];
+        if($produk['gambar'] == '') {
+            $row[] = '-';
+        } else {
+            $row[] = '<img src = "' . Route::getUploadPath('produk', $produk['gambar']) . '" width = "200">';
+        }
         // if(Auth::getSession('role') == 1) {
             $button = '<button type="button" name="hapus" id="' . $produk['id'] . '" class="hapus btn-flat btn-danger btn-sm"><i class = "fa fa-trash"></i></button> ';
             $button .= '<button type="button" name="ubah" id="' . $produk['id'] . '" class="ubah btn-flat btn-warning btn-sm"><i class = "fa fa-edit"></i></button> ';

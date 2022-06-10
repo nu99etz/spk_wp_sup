@@ -42,13 +42,16 @@ $totalProdukAternatif = mysqli_fetch_assoc($queryProdukAlternatif);
                 <!-- small card -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3><?php echo $totalProduk['total_produk'];?></h3>
+                        <h3><?php echo $totalProduk['total_produk']; ?></h3>
 
                         <p>Produk</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-database"></i>
                     </div>
+                    <a href="<?php echo $config['base_url'] . $config['path']; ?>/produk" class="small-box-footer">
+                        Produk <i class="fas fa-arrow-circle-right"></i>
+                    </a>
                 </div>
             </div>
 
@@ -56,13 +59,16 @@ $totalProdukAternatif = mysqli_fetch_assoc($queryProdukAlternatif);
                 <!-- small card -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3><?php echo $totalProdukAternatif['total_produk'];?></h3>
+                        <h3><?php echo $totalProdukAternatif['total_produk']; ?></h3>
 
                         <p>Data Alternatif</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-database"></i>
                     </div>
+                    <a href="<?php echo $config['base_url'] . $config['path']; ?>/data_alternatif" class="small-box-footer">
+                        Data Alternatif <i class="fas fa-arrow-circle-right"></i>
+                    </a>
                 </div>
             </div>
             <div class="col-lg-3"></div>

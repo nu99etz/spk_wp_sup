@@ -47,6 +47,7 @@ Page::useLayout("app");
                             <thead>
                                 <th>No</th>
                                 <th>Nama Produk</th>
+                                <th>Gambar Produk</th>
                                 <th>Aksi</th>
                             </thead>
                             <tbody></tbody>

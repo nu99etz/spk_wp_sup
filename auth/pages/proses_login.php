@@ -18,7 +18,6 @@ if (Route::is_ajax()) {
 
             if (!$query) {
                 $msg_error = "username dan password tidak ditemukan";
-                
             } else {
                 $login = mysqli_fetch_assoc($query);
 
@@ -43,6 +42,8 @@ if (Route::is_ajax()) {
             }
 
             if (empty($msg_error)) {
+                // hapus semua data pemilihan produk
+                mysqli_query($conn->connect(), "delete from temp_list");
                 $response = [
                     'status' => 200,
                     'messages' =>  $msg_success

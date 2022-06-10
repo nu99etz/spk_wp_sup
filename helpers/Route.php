@@ -61,7 +61,7 @@ class Route
             chmod($config['upload'], 0777);
         }
 
-        if (!is_dir($dir)) {
+        if (!is_dir($config['upload'] . $dir)) {
             mkdir($config['upload'] . $dir, 0777);
             chmod($config['upload'] . $dir, 0777);
         }
@@ -79,19 +79,24 @@ class Route
     {
         global $config;
 
-        return $config['view_upload'] . $dir . '/' . $namefile;
+        return $config['upload'] . $dir . '/' . $namefile;
     }
 
     public static function upload($dir, $files, $name_file, $filename, $limit_size = 2097152)
     {
+
+        global $config;
+
         $allowed_extension = array('png', 'jpg');
         $extension = strtolower(end(explode(".", $files[$name_file]['name'])));
         $size = $files[$name_file]['size'];
         $file_tmp = $files[$name_file]['tmp_name'];
+        // $folderUpload = $config['upload'] . $dir;
 
         if (in_array($extension, $allowed_extension) === true) {
             if ($size < $limit_size) {
                 $upload = move_uploaded_file($file_tmp, static::setUploadPath($dir, $filename . "." . $extension));
+                // $upload = move_uploaded_file($file_tmp, $folderUpload . $filename . "." . $extension);
                 if ($upload) {
                     return [
                         'status' => true,

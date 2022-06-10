@@ -2,6 +2,15 @@
 
 if (Route::is_ajax()) {
 
+    function getAlternatif($data, $idKriteria)
+    {
+        if (isset($data[$idKriteria])) {
+            return $data[$idKriteria];
+        } else {
+            return " - ";
+        }
+    }
+
     $sql = "select*from kriteria_produk a join produk b on a.id_produk = b.id join kriteria c on a.id_kriteria = c.id";
 
     $query = mysqli_query($conn->connect(), $sql);
@@ -12,8 +21,15 @@ if (Route::is_ajax()) {
 
     while ($alternatif = mysqli_fetch_array($query)) {
         $row = [];
-        $row[$alternatif['nama_kriteria']] = $alternatif['nilai_kriteria'];
-        $map[$alternatif['id_produk']][$alternatif['nama_produk']][] = $row;
+        $map[$alternatif['id_produk']][$alternatif['nama_produk']][$alternatif['id_kriteria']] = $alternatif['nilai_kriteria'];
+    }
+
+    $sqlKriteria = "select id from kriteria where id in (select id_kriteria from nilai_bobot_kriteria)";
+    $queryKriteria = mysqli_query($conn->connect(), $sqlKriteria);
+
+    $kriteriaRow = [];
+    while ($kriteria = mysqli_fetch_array($queryKriteria)) {
+        $kriteriaRow[] = $kriteria['id'];
     }
 
     foreach ($map as $key => $value) {
@@ -22,14 +38,8 @@ if (Route::is_ajax()) {
         foreach($value as $key2 => $value2) {
             $row[] = $key2;
         }
-        foreach ($value2 as $key3 => $value3) {
-            foreach ($value3 as $value4) {
-                if(isset($value4)) {
-                    $row[] = $value4;
-                } else {
-                    $row[] = "-";
-                }
-            }
+        foreach ($kriteriaRow as $value) {
+            $row[] = getAlternatif($value2, $value);
         }
         if(Auth::getSession('role') == 1) {
             $button = '<button type="button" name="hapus" id="' . $key . '" class="hapus btn-flat btn-danger btn-sm"><i class = "fa fa-trash"></i></button> ';
@@ -39,8 +49,6 @@ if (Route::is_ajax()) {
         $no++;
         $record[] = $row;
     }
-
-    // Maintence::debug($record);
 
     echo json_encode([
         'data' => $record,

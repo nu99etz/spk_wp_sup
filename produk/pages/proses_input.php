@@ -20,43 +20,84 @@ if (Route::is_ajax()) {
     } else {
         if (empty($_POST["_method"])) {
 
-            $nama_produk = strtoupper($_POST['nama_produk']);
-            $sql = "insert into produk (nama_produk) values ('$nama_produk')";
+            if (!empty($_FILES['gambar']['name'])) {
+                $upload = Route::upload('produk', $_FILES, 'gambar', strtoupper($_POST['nama_produk']));
+            }
 
-            $query = mysqli_query($conn->connect(), $sql);
-
-            if (!$query) {
+            if (!empty($upload) && $upload['status'] == false) {
                 $response = [
                     'status' => 422,
-                    'messages' => 'Gagal Input Produk'
+                    'messages' => $upload['messages']
                 ];
             } else {
-                $response = [
-                    'status' => 200,
-                    'messages' => 'Sukses Input Produk'
-                ];
-            }
-        } else {
-            
-            // proses update data
-            if ($_POST['_method'] == "PUT") {
-                $nama_produk = strtoupper($_POST['nama_produk']);
-                $id = $_POST['id'];
 
-                $sql = "update produk set nama_produk = '$nama_produk' where id = $id and 1=1";
+                $gambar = '';
+                if (!empty($upload)) {
+                    $gambar = $upload['files'];
+                }
+
+                $nama_produk = strtoupper($_POST['nama_produk']);
+                $sql = "insert into produk (nama_produk, gambar) values ('$nama_produk', '$gambar')";
 
                 $query = mysqli_query($conn->connect(), $sql);
 
                 if (!$query) {
                     $response = [
                         'status' => 422,
-                        'messages' => 'Gagal Update Produk'
+                        'messages' => 'Gagal Input Produk'
                     ];
                 } else {
                     $response = [
                         'status' => 200,
-                        'messages' => 'Sukses Update Produk'
+                        'messages' => 'Sukses Input Produk'
                     ];
+                }
+            }
+        } else {
+
+            // proses update data
+            if ($_POST['_method'] == "PUT") {
+
+                if (!empty($_FILES['gambar']['name'])) {
+                    if (!empty($_POST['default_gambar'])) {
+                        $id = $_POST['id'];
+                        $sql = "select gambar from produk where id = $id";
+                        $query = mysqli_query($conn->connect(), $sql);
+                        $product = mysqli_fetch_array($query);
+                        unlink(Route::getUploadPath('produk', $product['gambar']));
+                    }
+                    $upload = Route::upload('produk', $_FILES, 'gambar', strtoupper($_POST['nama_produk']));
+                }
+
+                if (!empty($upload) && $upload['status'] == false) {
+                    $response = [
+                        'status' => 422,
+                        'messages' => $upload['messages']
+                    ];
+                } else {
+                    $nama_produk = strtoupper($_POST['nama_produk']);
+                    $id = $_POST['id'];
+
+                    if (!empty($upload)) {
+                        $gambar = $upload['files'];
+                        $sql = "update produk set nama_produk = '$nama_produk', gambar = '$gambar' where id = $id and 1=1";
+                    } else {
+                        $sql = "update produk set nama_produk = '$nama_produk' where id = $id and 1=1";
+                    }
+
+                    $query = mysqli_query($conn->connect(), $sql);
+
+                    if (!$query) {
+                        $response = [
+                            'status' => 422,
+                            'messages' => 'Gagal Update Produk'
+                        ];
+                    } else {
+                        $response = [
+                            'status' => 200,
+                            'messages' => 'Sukses Update Produk'
+                        ];
+                    }
                 }
             } else {
                 $response = [

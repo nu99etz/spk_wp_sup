@@ -3,19 +3,19 @@
 $config = array();
 
 // Config URL
-$config['base_url'] = "http://localhost";
-$config['root'] = '/home/nu99etz/public_html';
+$config['base_url'] = "http://localhost:8080";
+$config['root'] = '/var/www/html';
 $config['path'] = '/spk_wp_sup';
 $config['assets'] = $config['path'] . '/assets/';
 $config['helpers'] = '../helpers/';
 $config['models'] = '../models/';
+// $config['upload'] = '../upload/';
 $config['upload'] = '../upload/';
-$config['view_upload'] = $config['path'] . '/upload/';
 $config['include'] = $config['path'] . '/include/';
 $config['vendor'] = '../vendor/';
 
 // Config DB
-$config['db_host'] = "localhost";
+$config['db_host'] = "mariadb-server";
 $config['db_name'] = "spk_wp_sup";
 $config['db_username'] = "root";
 $config['db_password'] = "sapi";
